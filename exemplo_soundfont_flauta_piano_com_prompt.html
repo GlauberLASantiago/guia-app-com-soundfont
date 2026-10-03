@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Exemplo SoundFont – Flauta e Piano</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --panel:#fff; --text:#17202a; --muted:#667085;
+    --border:#d0d5dd; --accent:#315efb; --black:#20242a; --white:#fff;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+  main{max-width:1000px;margin:28px auto;padding:0 16px 40px}
+  h1{font-size:1.8rem;margin:.2rem 0 .3rem}
+  h2{font-size:1.2rem;margin:0 0 12px}
+  p{line-height:1.45}
+  .lead{color:var(--muted);margin-top:0}
+  .panel{
+    background:var(--panel); border:1px solid var(--border); border-radius:16px;
+    padding:18px; margin:16px 0;
+  }
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  button{
+    min-height:44px; font:inherit; border:1px solid var(--border);
+    border-radius:10px; background:white; padding:9px 14px; cursor:pointer;
+  }
+  button.primary{background:var(--accent);color:white;border-color:var(--accent)}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  button:focus-visible, textarea:focus-visible{outline:3px solid #9bb3ff;outline-offset:2px}
+  .status{
+    margin-top:12px;padding:10px 12px;background:#f8fafc;
+    border:1px solid var(--border);border-radius:10px;color:var(--muted)
+  }
+  .keyboard-wrap{overflow-x:auto;padding:4px 0 8px}
+  .keyboard{
+    position:relative; width:728px; height:190px; margin:0 auto;
+    user-select:none; touch-action:manipulation;
+  }
+  .white-key{
+    position:absolute; top:0; width:52px; height:188px;
+    background:var(--white); border:1px solid #777; border-radius:0 0 7px 7px;
+    display:flex;align-items:flex-end;justify-content:center;
+    padding-bottom:10px;font-size:.78rem;color:#344054;z-index:1;cursor:pointer;
+  }
+  .black-key{
+    position:absolute; top:0; width:34px; height:112px;
+    background:var(--black); border:1px solid #111; border-radius:0 0 6px 6px;
+    color:white; display:flex;align-items:flex-end;justify-content:center;
+    padding-bottom:8px;font-size:.68rem;z-index:3;cursor:pointer;
+  }
+  .key.active{filter:brightness(.78);box-shadow:inset 0 0 0 3px var(--accent)}
+  .help{font-size:.92rem;color:var(--muted)}
+  textarea{
+    width:100%; min-height:310px; resize:vertical;
+    border:1px solid var(--border); border-radius:12px; padding:14px;
+    font:14px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;
+    background:#fbfcfe; color:#20242a;
+  }
+  .copy-note{font-size:.9rem;color:var(--muted);margin-top:8px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Exemplo de SoundFont – Flauta e Piano</h1>
+  <p class="lead">
+    Este exemplo mostra como usar apenas dois instrumentos do banco FluidR3_GM:
+    flauta e piano acústico.
+  </p>
+
+  <section class="panel">
+    <h2>1. Carregar os instrumentos</h2>
+    <div class="row">
+      <button id="loadBtn" class="primary">Carregar flauta e piano</button>
+      <button id="stopBtn" disabled>Parar todos os sons</button>
+    </div>
+    <div id="status" class="status" aria-live="polite">Aguardando carregamento.</div>
+  </section>
+
+  <section class="panel">
+    <h2>2. Teclado da flauta</h2>
+    <div class="help">Clique ou toque nas teclas. Faixa: Dó4 a Dó6.</div>
+    <div class="keyboard-wrap">
+      <div id="fluteKeyboard" class="keyboard" aria-label="Teclado musical da flauta"></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>3. Teclado do piano</h2>
+    <div class="help">Clique ou toque nas teclas. Faixa: Dó3 a Dó5.</div>
+    <div class="keyboard-wrap">
+      <div id="pianoKeyboard" class="keyboard" aria-label="Teclado musical do piano"></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>4. Prompt para usar esta tecnologia em outro app</h2>
+    <p>
+      Copie o texto abaixo e cole em uma IA junto com o código do aplicativo
+      em que você quer implantar essa solução.
+    </p>
+
+    <textarea id="promptText" readonly>Analise o código deste aplicativo e implemente reprodução por SoundFont usando o banco FluidR3_GM, disponível em:
+
+https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/
+
+Use SOMENTE estes dois instrumentos:
+
+- Flauta: flute
+- Piano acústico: acoustic_grand_piano
+
+Os arquivos correspondentes são:
+
+- flute-mp3.js
+- acoustic_grand_piano-mp3.js
+
+Objetivo:
+Substituir ou complementar o mecanismo atual de síntese sonora por amostras de SoundFont mais naturais, mantendo o aplicativo leve.
+
+Requisitos:
+
+1. Não carregue o banco General MIDI completo.
+2. Carregue apenas flute e acoustic_grand_piano.
+3. Faça o carregamento dos instrumentos sob demanda, preferencialmente somente após interação do usuário.
+4. Utilize Web Audio API para a reprodução.
+5. Preserve toda a lógica musical já existente no aplicativo, incluindo:
+   - altura das notas;
+   - números MIDI;
+   - andamento;
+   - duração;
+   - dinâmica;
+   - início e término das notas.
+6. Modifique apenas a camada de áudio necessária.
+7. Evite reprocessar ou recarregar amostras que já estejam em memória.
+8. Mantenha compatibilidade com navegadores desktop e mobile.
+9. Se o SoundFont não puder ser carregado, preserve o mecanismo sonoro anterior como fallback.
+10. Não altere desnecessariamente a interface nem a lógica principal do aplicativo.
+11. Se possível, decodifique em memória somente as notas efetivamente necessárias ao app, em vez de preparar todas as notas do instrumento.
+12. Use arquivos MP3 do midi-js-soundfonts para reduzir o tamanho do carregamento.
+13. Organize o código de forma que outros instrumentos possam ser acrescentados futuramente sem reescrever toda a arquitetura.
+
+Referência técnica de carregamento:
+
+const BASE = "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/";
+
+Os instrumentos podem ser carregados por arquivos independentes:
+
+BASE + "flute-mp3.js"
+BASE + "acoustic_grand_piano-mp3.js"
+
+Depois do carregamento, as amostras ficam disponíveis em:
+
+window.MIDI.Soundfont.flute
+window.MIDI.Soundfont.acoustic_grand_piano
+
+Essas amostras são data URLs em base64 e podem ser convertidas para ArrayBuffer e decodificadas usando AudioContext.decodeAudioData().
+
+Antes de alterar o código:
+- identifique como o aplicativo atual gera o áudio;
+- localize as funções responsáveis por note-on, note-off, duração, volume e seleção de instrumento;
+- mantenha a lógica musical existente;
+- troque apenas o motor de som necessário.
+
+Ao final:
+1. entregue o código completo já modificado;
+2. explique resumidamente quais trechos foram alterados;
+3. indique onde foram adicionados o carregamento do SoundFont e a reprodução por Web Audio;
+4. mantenha o código simples, modular e leve.</textarea>
+
+    <div class="row" style="margin-top:10px">
+      <button id="copyBtn">Copiar prompt</button>
+    </div>
+    <div id="copyStatus" class="copy-note" aria-live="polite"></div>
+  </section>
+</main>
+
+<script>
+(() => {
+  const BASE = "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/";
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  const ctx = new AudioCtx();
+
+  const loadBtn = document.getElementById("loadBtn");
+  const stopBtn = document.getElementById("stopBtn");
+  const statusEl = document.getElementById("status");
+  const promptText = document.getElementById("promptText");
+  const copyBtn = document.getElementById("copyBtn");
+  const copyStatus = document.getElementById("copyStatus");
+
+  const decoded = {
+    flute: new Map(),
+    acoustic_grand_piano: new Map()
+  };
+
+  let loaded = false;
+  let sources = [];
+
+  const NOTE_NAMES = ["C","Db","D","Eb","E","F","Gb","G","Ab","A","Bb","B"];
+
+  function midiToName(midi){
+    const oct = Math.floor(midi / 12) - 1;
+    return NOTE_NAMES[midi % 12] + oct;
+  }
+
+  function loadScript(url){
+    return new Promise((resolve,reject)=>{
+      const s=document.createElement("script");
+      s.src=url;
+      s.onload=resolve;
+      s.onerror=reject;
+      document.head.appendChild(s);
+    });
+  }
+
+  function dataUrlToArrayBuffer(dataUrl){
+    const base64=dataUrl.split(",")[1];
+    const bin=atob(base64);
+    const bytes=new Uint8Array(bin.length);
+    for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+    return bytes.buffer;
+  }
+
+  async function decodeRange(instrument,minMidi,maxMidi){
+    const sf=window.MIDI?.Soundfont?.[instrument];
+    if(!sf) throw new Error("SoundFont ausente: "+instrument);
+
+    for(let midi=minMidi;midi<=maxMidi;midi++){
+      const note=midiToName(midi);
+      if(decoded[instrument].has(note)) continue;
+      const data=sf[note];
+      if(!data) continue;
+
+      const arrayBuffer=dataUrlToArrayBuffer(data);
+      const buffer=await ctx.decodeAudioData(arrayBuffer.slice(0));
+      decoded[instrument].set(note,buffer);
+    }
+  }
+
+  async function loadSounds(){
+    loadBtn.disabled=true;
+    statusEl.textContent="Carregando flauta e piano...";
+
+    try{
+      await ctx.resume();
+
+      if(!window.MIDI?.Soundfont?.flute){
+        await loadScript(BASE+"flute-mp3.js");
+      }
+
+      if(!window.MIDI?.Soundfont?.acoustic_grand_piano){
+        await loadScript(BASE+"acoustic_grand_piano-mp3.js");
+      }
+
+      await decodeRange("flute",60,84);
+      await decodeRange("acoustic_grand_piano",48,72);
+
+      loaded=true;
+      stopBtn.disabled=false;
+      statusEl.textContent="Pronto. Flauta e piano carregados.";
+    }catch(err){
+      console.error(err);
+      statusEl.textContent="Não foi possível carregar os SoundFonts. Verifique a conexão.";
+      loadBtn.disabled=false;
+    }
+  }
+
+  function playNote(instrument,note,duration=0.9,velocity=0.65){
+    if(!loaded){
+      statusEl.textContent="Carregue os instrumentos primeiro.";
+      return;
+    }
+
+    const buffer=decoded[instrument].get(note);
+    if(!buffer){
+      statusEl.textContent="Amostra não disponível: "+note;
+      return;
+    }
+
+    ctx.resume();
+
+    const now=ctx.currentTime;
+    const src=ctx.createBufferSource();
+    const gain=ctx.createGain();
+
+    src.buffer=buffer;
+    src.connect(gain);
+    gain.connect(ctx.destination);
+
+    gain.gain.setValueAtTime(0.0001,now);
+    gain.gain.exponentialRampToValueAtTime(velocity,now+0.015);
+    gain.gain.setValueAtTime(velocity,Math.max(now+0.03,now+duration-0.08));
+    gain.gain.exponentialRampToValueAtTime(0.0001,now+duration);
+
+    src.start(now);
+    src.stop(now+duration+0.03);
+
+    sources.push(src);
+    src.onended=()=>{sources=sources.filter(x=>x!==src)};
+  }
+
+  function stopAll(){
+    sources.forEach(s=>{
+      try{s.stop()}catch(e){}
+    });
+    sources=[];
+  }
+
+  function buildKeyboard(el,instrument,startMidi,endMidi){
+    const whites=[];
+
+    for(let m=startMidi;m<=endMidi;m++){
+      if(![1,3,6,8,10].includes(m%12)) whites.push(m);
+    }
+
+    el.style.width=(whites.length*52)+"px";
+
+    let whiteIndex=0;
+
+    for(let m=startMidi;m<=endMidi;m++){
+      const pc=m%12;
+      const isBlack=[1,3,6,8,10].includes(pc);
+      const note=midiToName(m);
+
+      const key=document.createElement("button");
+      key.type="button";
+      key.className="key "+(isBlack?"black-key":"white-key");
+      key.dataset.note=note;
+      key.setAttribute("aria-label",note);
+
+      if(!isBlack){
+        key.style.left=(whiteIndex*52)+"px";
+        if(pc===0){
+          key.textContent="Dó "+(Math.floor(m/12)-1);
+        }
+        whiteIndex++;
+      }else{
+        key.style.left=((whiteIndex*52)-17)+"px";
+      }
+
+      const start=()=>{
+        key.classList.add("active");
+        playNote(
+          instrument,
+          note,
+          instrument==="flute"?0.9:1.0,
+          instrument==="flute"?0.7:0.55
+        );
+      };
+
+      const end=()=>key.classList.remove("active");
+
+      key.addEventListener("pointerdown",e=>{
+        e.preventDefault();
+        start();
+      });
+
+      key.addEventListener("pointerup",end);
+      key.addEventListener("pointercancel",end);
+      key.addEventListener("pointerleave",end);
+
+      el.appendChild(key);
+    }
+  }
+
+  buildKeyboard(
+    document.getElementById("fluteKeyboard"),
+    "flute",
+    60,
+    84
+  );
+
+  buildKeyboard(
+    document.getElementById("pianoKeyboard"),
+    "acoustic_grand_piano",
+    48,
+    72
+  );
+
+  copyBtn.addEventListener("click",async()=>{
+    try{
+      await navigator.clipboard.writeText(promptText.value);
+      copyStatus.textContent="Prompt copiado.";
+    }catch(err){
+      promptText.focus();
+      promptText.select();
+      copyStatus.textContent="Selecione o texto e copie manualmente.";
+    }
+  });
+
+  loadBtn.addEventListener("click",loadSounds);
+  stopBtn.addEventListener("click",stopAll);
+})();
+</script>
+</body>
+</html>
