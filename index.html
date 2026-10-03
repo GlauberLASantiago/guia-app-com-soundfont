@@ -3,81 +3,332 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Exemplo SoundFont – Flauta e Piano</title>
+<title>SoundFont General MIDI – Demonstração</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
 <style>
   :root{
-    --bg:#f6f7f9; --panel:#fff; --text:#17202a; --muted:#667085;
-    --border:#d0d5dd; --accent:#315efb; --black:#20242a; --white:#fff;
+    --font-title:'Plus Jakarta Sans',sans-serif;
+    --font-body:'DM Sans',sans-serif;
+
+    --charcoal:#2F3D40;
+    --gray:#9D9D9D;
+    --lime:#C5D16B;
+    --yellow:#F7CE5B;
+    --brown:#6E260E;
+
+    --panel:rgba(255,255,255,.92);
+    --panel-strong:rgba(255,255,255,.97);
+    --border:rgba(47,61,64,.18);
+    --shadow:0 18px 50px rgba(47,61,64,.16);
   }
+
   *{box-sizing:border-box}
+
+  html{min-height:100%}
+
   body{
-    margin:0; background:var(--bg); color:var(--text);
-    font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    margin:0;
+    min-height:100%;
+    color:var(--charcoal);
+    font-family:var(--font-body);
+    background:
+      linear-gradient(rgba(247,206,91,.14),rgba(47,61,64,.18)),
+      url("https://raw.githubusercontent.com/GlauberLASantiago/gl-cores-fontes-e-fundos/main/musica/Gemini_Generated_Image_%20(2).png")
+      center top / cover fixed no-repeat;
   }
-  main{max-width:1000px;margin:28px auto;padding:0 16px 40px}
-  h1{font-size:1.8rem;margin:.2rem 0 .3rem}
-  h2{font-size:1.2rem;margin:0 0 12px}
-  p{line-height:1.45}
-  .lead{color:var(--muted);margin-top:0}
+
+  body,p,span,a,input,button,textarea{
+    font-family:var(--font-body);
+  }
+
+  h1,h2,h3,h4{
+    font-family:var(--font-title);
+    color:var(--charcoal);
+  }
+
+  main{
+    max-width:1060px;
+    margin:0 auto;
+    padding:34px 18px 48px;
+  }
+
+  .hero{
+    background:rgba(47,61,64,.91);
+    color:white;
+    border-radius:24px;
+    padding:28px;
+    box-shadow:var(--shadow);
+    backdrop-filter:blur(8px);
+    border:1px solid rgba(255,255,255,.12);
+  }
+
+  .eyebrow{
+    display:inline-block;
+    padding:6px 11px;
+    border-radius:999px;
+    background:var(--lime);
+    color:var(--charcoal);
+    font-size:.8rem;
+    font-weight:700;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    margin-bottom:12px;
+  }
+
+  .hero h1{
+    margin:0 0 8px;
+    color:white;
+    font-size:clamp(1.8rem,4vw,3rem);
+    line-height:1.04;
+  }
+
+  .hero p{
+    margin:0;
+    color:rgba(255,255,255,.8);
+    max-width:760px;
+    line-height:1.55;
+  }
+
   .panel{
-    background:var(--panel); border:1px solid var(--border); border-radius:16px;
-    padding:18px; margin:16px 0;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:22px;
+    margin-top:18px;
+    box-shadow:var(--shadow);
+    backdrop-filter:blur(10px);
   }
-  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+  .panel h2{
+    margin:0 0 8px;
+    font-size:1.2rem;
+  }
+
+  .help{
+    color:#687376;
+    font-size:.93rem;
+    line-height:1.5;
+  }
+
+  .row{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+
   button{
-    min-height:44px; font:inherit; border:1px solid var(--border);
-    border-radius:10px; background:white; padding:9px 14px; cursor:pointer;
+    min-height:44px;
+    border-radius:12px;
+    padding:10px 15px;
+    border:1px solid var(--border);
+    background:white;
+    color:var(--charcoal);
+    font-weight:600;
+    cursor:pointer;
+    transition:.15s ease;
   }
-  button.primary{background:var(--accent);color:white;border-color:var(--accent)}
-  button:disabled{opacity:.5;cursor:not-allowed}
-  button:focus-visible, textarea:focus-visible{outline:3px solid #9bb3ff;outline-offset:2px}
+
+  button:hover{
+    transform:translateY(-1px);
+    border-color:var(--charcoal);
+  }
+
+  button.primary{
+    background:var(--charcoal);
+    color:white;
+    border-color:var(--charcoal);
+  }
+
+  button.accent{
+    background:var(--yellow);
+    color:var(--charcoal);
+    border-color:#ddb643;
+  }
+
+  button:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+    transform:none;
+  }
+
+  button:focus-visible,
+  textarea:focus-visible{
+    outline:3px solid var(--lime);
+    outline-offset:3px;
+  }
+
   .status{
-    margin-top:12px;padding:10px 12px;background:#f8fafc;
-    border:1px solid var(--border);border-radius:10px;color:var(--muted)
+    margin-top:13px;
+    padding:12px 14px;
+    background:rgba(197,209,107,.18);
+    border:1px solid rgba(197,209,107,.6);
+    border-radius:12px;
+    color:var(--charcoal);
+    font-weight:500;
   }
-  .keyboard-wrap{overflow-x:auto;padding:4px 0 8px}
+
+  .keyboard-wrap{
+    overflow-x:auto;
+    padding:8px 0 5px;
+  }
+
   .keyboard{
-    position:relative; width:728px; height:190px; margin:0 auto;
-    user-select:none; touch-action:manipulation;
+    position:relative;
+    height:190px;
+    margin:0 auto;
+    user-select:none;
+    touch-action:manipulation;
   }
+
   .white-key{
-    position:absolute; top:0; width:52px; height:188px;
-    background:var(--white); border:1px solid #777; border-radius:0 0 7px 7px;
-    display:flex;align-items:flex-end;justify-content:center;
-    padding-bottom:10px;font-size:.78rem;color:#344054;z-index:1;cursor:pointer;
+    position:absolute;
+    top:0;
+    width:52px;
+    height:188px;
+    border:1px solid #8f999b;
+    border-radius:0 0 8px 8px;
+    background:linear-gradient(#fff,#f4f5ef);
+    color:var(--charcoal);
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    padding-bottom:10px;
+    font-size:.77rem;
+    z-index:1;
+    cursor:pointer;
   }
+
   .black-key{
-    position:absolute; top:0; width:34px; height:112px;
-    background:var(--black); border:1px solid #111; border-radius:0 0 6px 6px;
-    color:white; display:flex;align-items:flex-end;justify-content:center;
-    padding-bottom:8px;font-size:.68rem;z-index:3;cursor:pointer;
+    position:absolute;
+    top:0;
+    width:34px;
+    height:112px;
+    border:1px solid #151b1c;
+    border-radius:0 0 7px 7px;
+    background:linear-gradient(#2F3D40,#182022);
+    color:white;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    padding-bottom:8px;
+    font-size:.66rem;
+    z-index:3;
+    cursor:pointer;
   }
-  .key.active{filter:brightness(.78);box-shadow:inset 0 0 0 3px var(--accent)}
-  .help{font-size:.92rem;color:var(--muted)}
+
+  .key.active{
+    box-shadow:inset 0 0 0 4px var(--yellow);
+    filter:brightness(.86);
+  }
+
+  .prompt-intro{
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:14px;
+    align-items:center;
+    margin-bottom:12px;
+  }
+
+  .badge{
+    display:inline-block;
+    padding:5px 9px;
+    background:rgba(110,38,14,.1);
+    color:var(--brown);
+    border-radius:999px;
+    font-size:.78rem;
+    font-weight:700;
+  }
+
   textarea{
-    width:100%; min-height:310px; resize:vertical;
-    border:1px solid var(--border); border-radius:12px; padding:14px;
-    font:14px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;
-    background:#fbfcfe; color:#20242a;
+    width:100%;
+    min-height:540px;
+    resize:vertical;
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:16px;
+    font-size:14px;
+    line-height:1.48;
+    color:#243033;
+    background:var(--panel-strong);
   }
-  .copy-note{font-size:.9rem;color:var(--muted);margin-top:8px}
+
+  .copy-note{
+    margin-top:8px;
+    color:#657174;
+    font-size:.9rem;
+  }
+
+  .mini-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-top:12px;
+  }
+
+  .mini-card{
+    background:rgba(255,255,255,.68);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:12px;
+  }
+
+  .mini-card strong{
+    display:block;
+    font-family:var(--font-title);
+    font-size:.9rem;
+    margin-bottom:4px;
+  }
+
+  @media(max-width:720px){
+    .prompt-intro{grid-template-columns:1fr}
+    .mini-grid{grid-template-columns:1fr}
+    .panel{padding:17px}
+    .hero{padding:22px}
+  }
 </style>
 </head>
+
 <body>
 <main>
-  <h1>Exemplo de SoundFont – Flauta e Piano</h1>
-  <p class="lead">
-    Este exemplo mostra como usar apenas dois instrumentos do banco FluidR3_GM:
-    flauta e piano acústico.
-  </p>
+  <header class="hero">
+    <span class="eyebrow">General MIDI • Web Audio</span>
+    <h1>SoundFonts de alta leveza para apps musicais</h1>
+    <p>
+      Demonstração prática com o banco FluidR3_GM. Os teclados abaixo usam apenas
+      flauta e piano para exemplificar a tecnologia; o prompt ao final ensina como
+      aplicar a mesma abordagem a todos os instrumentos General MIDI.
+    </p>
+  </header>
 
   <section class="panel">
-    <h2>1. Carregar os instrumentos</h2>
+    <h2>1. Carregue os sons de demonstração</h2>
     <div class="row">
       <button id="loadBtn" class="primary">Carregar flauta e piano</button>
       <button id="stopBtn" disabled>Parar todos os sons</button>
     </div>
-    <div id="status" class="status" aria-live="polite">Aguardando carregamento.</div>
+    <div id="status" class="status" aria-live="polite">
+      Aguardando carregamento dos instrumentos.
+    </div>
+
+    <div class="mini-grid">
+      <div class="mini-card">
+        <strong>Banco</strong>
+        FluidR3_GM
+      </div>
+      <div class="mini-card">
+        <strong>Motor</strong>
+        Web Audio API
+      </div>
+      <div class="mini-card">
+        <strong>Estratégia</strong>
+        Carregamento por instrumento
+      </div>
+    </div>
   </section>
 
   <section class="panel">
@@ -97,81 +348,338 @@
   </section>
 
   <section class="panel">
-    <h2>4. Prompt para usar esta tecnologia em outro app</h2>
-    <p>
-      Copie o texto abaixo e cole em uma IA junto com o código do aplicativo
-      em que você quer implantar essa solução.
-    </p>
+    <div class="prompt-intro">
+      <div>
+        <h2>4. Prompt para usar esta tecnologia em outro app</h2>
+        <div class="help">
+          Copie este prompt e cole em uma IA junto com o código do seu aplicativo.
+          Ele orienta a implantação do conjunto General MIDI completo, carregando
+          somente os instrumentos necessários em cada momento.
+        </div>
+      </div>
+      <span class="badge">Todos os sons GM</span>
+    </div>
 
-    <textarea id="promptText" readonly>Analise o código deste aplicativo e implemente reprodução por SoundFont usando o banco FluidR3_GM, disponível em:
+<textarea id="promptText" readonly>Analise o código deste aplicativo e implemente reprodução por SoundFont usando o banco FluidR3_GM, disponível em:
 
 https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/
 
-Use SOMENTE estes dois instrumentos:
+OBJETIVO
 
-- Flauta: flute
-- Piano acústico: acoustic_grand_piano
+Permitir que o aplicativo utilize os instrumentos do padrão General MIDI com sons baseados em amostras, em vez de depender exclusivamente de síntese FM ou de osciladores simples.
 
-Os arquivos correspondentes são:
+Utilize o banco FluidR3_GM do projeto midi-js-soundfonts.
 
-- flute-mp3.js
-- acoustic_grand_piano-mp3.js
+IMPORTANTE:
+Não carregue todos os instrumentos e todas as amostras de uma só vez. Implemente carregamento sob demanda, de acordo com o instrumento realmente utilizado pelo usuário.
 
-Objetivo:
-Substituir ou complementar o mecanismo atual de síntese sonora por amostras de SoundFont mais naturais, mantendo o aplicativo leve.
+O banco segue os nomes de instrumentos do General MIDI em formato semelhante a:
 
-Requisitos:
+acoustic_grand_piano
+bright_acoustic_piano
+electric_grand_piano
+honkytonk_piano
+electric_piano_1
+electric_piano_2
+harpsichord
+clavinet
+celesta
+glockenspiel
+music_box
+vibraphone
+marimba
+xylophone
+tubular_bells
+dulcimer
+drawbar_organ
+percussive_organ
+rock_organ
+church_organ
+reed_organ
+accordion
+harmonica
+tango_accordion
+acoustic_guitar_nylon
+acoustic_guitar_steel
+electric_guitar_jazz
+electric_guitar_clean
+electric_guitar_muted
+overdriven_guitar
+distortion_guitar
+guitar_harmonics
+acoustic_bass
+electric_bass_finger
+electric_bass_pick
+fretless_bass
+slap_bass_1
+slap_bass_2
+synth_bass_1
+synth_bass_2
+violin
+viola
+cello
+contrabass
+tremolo_strings
+pizzicato_strings
+orchestral_harp
+timpani
+string_ensemble_1
+string_ensemble_2
+synth_strings_1
+synth_strings_2
+choir_aahs
+voice_oohs
+synth_choir
+orchestra_hit
+trumpet
+trombone
+tuba
+muted_trumpet
+french_horn
+brass_section
+synth_brass_1
+synth_brass_2
+soprano_sax
+alto_sax
+tenor_sax
+baritone_sax
+oboe
+english_horn
+bassoon
+clarinet
+piccolo
+flute
+recorder
+pan_flute
+blown_bottle
+shakuhachi
+whistle
+ocarina
+lead_1_square
+lead_2_sawtooth
+lead_3_calliope
+lead_4_chiff
+lead_5_charang
+lead_6_voice
+lead_7_fifths
+lead_8_bass__lead
+pad_1_new_age
+pad_2_warm
+pad_3_polysynth
+pad_4_choir
+pad_5_bowed
+pad_6_metallic
+pad_7_halo
+pad_8_sweep
+fx_1_rain
+fx_2_soundtrack
+fx_3_crystal
+fx_4_atmosphere
+fx_5_brightness
+fx_6_goblins
+fx_7_echoes
+fx_8_scifi
+sitar
+banjo
+shamisen
+koto
+kalimba
+bagpipe
+fiddle
+shanai
+tinkle_bell
+agogo
+steel_drums
+woodblock
+taiko_drum
+melodic_tom
+synth_drum
+reverse_cymbal
+guitar_fret_noise
+breath_noise
+seashore
+bird_tweet
+telephone_ring
+helicopter
+applause
+gunshot
 
-1. Não carregue o banco General MIDI completo.
-2. Carregue apenas flute e acoustic_grand_piano.
-3. Faça o carregamento dos instrumentos sob demanda, preferencialmente somente após interação do usuário.
-4. Utilize Web Audio API para a reprodução.
-5. Preserve toda a lógica musical já existente no aplicativo, incluindo:
-   - altura das notas;
-   - números MIDI;
-   - andamento;
-   - duração;
-   - dinâmica;
-   - início e término das notas.
-6. Modifique apenas a camada de áudio necessária.
-7. Evite reprocessar ou recarregar amostras que já estejam em memória.
-8. Mantenha compatibilidade com navegadores desktop e mobile.
-9. Se o SoundFont não puder ser carregado, preserve o mecanismo sonoro anterior como fallback.
-10. Não altere desnecessariamente a interface nem a lógica principal do aplicativo.
-11. Se possível, decodifique em memória somente as notas efetivamente necessárias ao app, em vez de preparar todas as notas do instrumento.
-12. Use arquivos MP3 do midi-js-soundfonts para reduzir o tamanho do carregamento.
-13. Organize o código de forma que outros instrumentos possam ser acrescentados futuramente sem reescrever toda a arquitetura.
+REQUISITOS DE IMPLEMENTAÇÃO
 
-Referência técnica de carregamento:
+1. Preserve toda a lógica musical já existente no aplicativo.
 
-const BASE = "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/";
+2. Não reescreva desnecessariamente:
+- notas MIDI;
+- andamento;
+- duração;
+- dinâmica;
+- articulação;
+- lógica de acordes;
+- sequenciamento;
+- interface;
+- eventos note-on e note-off.
 
-Os instrumentos podem ser carregados por arquivos independentes:
+3. Substitua ou complemente apenas a camada responsável pela geração sonora.
 
-BASE + "flute-mp3.js"
+4. Crie uma arquitetura genérica que permita selecionar qualquer instrumento General MIDI pelo nome.
+
+5. Associe cada instrumento ao respectivo arquivo MP3 do FluidR3_GM.
+
+Exemplo:
+
+const BASE =
+"https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/";
+
+Para piano:
+
 BASE + "acoustic_grand_piano-mp3.js"
 
-Depois do carregamento, as amostras ficam disponíveis em:
+Para flauta:
 
-window.MIDI.Soundfont.flute
-window.MIDI.Soundfont.acoustic_grand_piano
+BASE + "flute-mp3.js"
 
-Essas amostras são data URLs em base64 e podem ser convertidas para ArrayBuffer e decodificadas usando AudioContext.decodeAudioData().
+Para violino:
 
-Antes de alterar o código:
-- identifique como o aplicativo atual gera o áudio;
-- localize as funções responsáveis por note-on, note-off, duração, volume e seleção de instrumento;
-- mantenha a lógica musical existente;
-- troque apenas o motor de som necessário.
+BASE + "violin-mp3.js"
+
+Para trompete:
+
+BASE + "trumpet-mp3.js"
+
+A mesma lógica deve funcionar para os demais instrumentos disponíveis no banco.
+
+6. Implemente uma função genérica semelhante a:
+
+loadInstrument("flute")
+loadInstrument("violin")
+loadInstrument("acoustic_grand_piano")
+
+Essa função deve:
+
+- verificar se o instrumento já está carregado;
+- evitar downloads repetidos;
+- carregar apenas o arquivo necessário;
+- guardar o instrumento em cache;
+- preparar somente as amostras necessárias para reprodução.
+
+7. Depois do carregamento, os dados normalmente ficam disponíveis em:
+
+window.MIDI.Soundfont[nomeDoInstrumento]
+
+8. As notas são armazenadas como data URLs em base64.
+
+Converta essas amostras para ArrayBuffer e utilize:
+
+AudioContext.decodeAudioData()
+
+para obter AudioBuffers reproduzíveis pela Web Audio API.
+
+9. Crie cache de AudioBuffers decodificados.
+
+Uma mesma nota não deve ser decodificada novamente a cada execução.
+
+Estrutura sugerida:
+
+instrumentCache
+decodedSampleCache
+
+10. Sempre que possível, decodifique somente as notas realmente utilizadas pelo aplicativo.
+
+Exemplo:
+
+Se determinado exercício utiliza apenas C4, D4, E4, F4 e G4, não é necessário decodificar imediatamente todas as notas disponíveis do instrumento.
+
+11. Permita trocar instrumentos durante a execução.
+
+Exemplo:
+
+setInstrument("flute")
+setInstrument("clarinet")
+setInstrument("violin")
+setInstrument("trumpet")
+
+A troca deve carregar automaticamente o instrumento caso ainda não esteja disponível.
+
+12. Preserve polifonia.
+
+O sistema deve permitir várias notas simultâneas para acordes.
+
+13. Implemente controle independente de volume por nota ou instrumento usando GainNode.
+
+14. Implemente envelope simples de ataque e liberação para evitar cliques no início ou no final das amostras.
+
+15. Mantenha compatibilidade com:
+
+- Chrome;
+- Edge;
+- Firefox;
+- Safari;
+- navegadores móveis compatíveis com Web Audio API.
+
+16. Respeite as restrições de autoplay dos navegadores.
+
+AudioContext deve ser iniciado ou retomado após uma interação do usuário.
+
+17. Não carregue o banco General MIDI inteiro na inicialização.
+
+O objetivo é manter o aplicativo leve.
+
+A estratégia recomendada é:
+
+usuário seleciona instrumento
+→ aplicativo verifica cache
+→ baixa apenas o JS daquele instrumento
+→ decodifica apenas as notas necessárias
+→ toca as amostras
+→ mantém o material em cache para reutilização.
+
+18. Caso o aplicativo atual possua síntese FM, osciladores ou outro mecanismo próprio, mantenha-o como fallback.
+
+Se houver falha de rede ou de carregamento do SoundFont, o aplicativo deve continuar funcionando com o mecanismo anterior.
+
+19. Organize uma camada de áudio reutilizável.
+
+Sugestão:
+
+SoundFontEngine
+  loadInstrument()
+  ensureNote()
+  playNote()
+  stopNote()
+  setVolume()
+  preloadNotes()
+
+20. Não altere layout, navegação ou regras musicais sem necessidade.
+
+ANTES DE ALTERAR O CÓDIGO
+
+Primeiro analise:
+
+- onde o áudio atual é produzido;
+- onde ocorre note-on;
+- onde ocorre note-off;
+- como as notas MIDI são representadas;
+- como duração e volume são controlados;
+- como o instrumento é selecionado;
+- se existe sistema de síntese FM, sampler ou osciladores.
+
+Depois adapte somente a camada sonora necessária.
+
+RESULTADO ESPERADO
+
+O aplicativo deverá poder utilizar instrumentos General MIDI do FluidR3_GM com carregamento sob demanda, boa qualidade sonora e baixo consumo inicial de memória e banda.
 
 Ao final:
-1. entregue o código completo já modificado;
-2. explique resumidamente quais trechos foram alterados;
-3. indique onde foram adicionados o carregamento do SoundFont e a reprodução por Web Audio;
-4. mantenha o código simples, modular e leve.</textarea>
 
-    <div class="row" style="margin-top:10px">
-      <button id="copyBtn">Copiar prompt</button>
+1. entregue o código completo modificado;
+2. descreva resumidamente as alterações;
+3. indique quais funções controlam o SoundFont;
+4. explique como adicionar ou selecionar novos instrumentos General MIDI;
+5. preserve o sistema sonoro anterior como fallback, quando existir;
+6. mantenha o código modular, legível e fácil de reutilizar.</textarea>
+
+    <div class="row" style="margin-top:12px">
+      <button id="copyBtn" class="accent">Copiar prompt</button>
     </div>
     <div id="copyStatus" class="copy-note" aria-live="polite"></div>
   </section>
@@ -219,7 +727,9 @@ Ao final:
     const base64=dataUrl.split(",")[1];
     const bin=atob(base64);
     const bytes=new Uint8Array(bin.length);
-    for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+    for(let i=0;i<bin.length;i++){
+      bytes[i]=bin.charCodeAt(i);
+    }
     return bytes.buffer;
   }
 
@@ -229,7 +739,9 @@ Ao final:
 
     for(let midi=minMidi;midi<=maxMidi;midi++){
       const note=midiToName(midi);
+
       if(decoded[instrument].has(note)) continue;
+
       const data=sf[note];
       if(!data) continue;
 
@@ -259,7 +771,7 @@ Ao final:
 
       loaded=true;
       stopBtn.disabled=false;
-      statusEl.textContent="Pronto. Flauta e piano carregados.";
+      statusEl.textContent="Pronto. Os dois instrumentos de demonstração estão carregados.";
     }catch(err){
       console.error(err);
       statusEl.textContent="Não foi possível carregar os SoundFonts. Verifique a conexão.";
@@ -267,13 +779,14 @@ Ao final:
     }
   }
 
-  function playNote(instrument,note,duration=0.9,velocity=0.65){
+  function playNote(instrument,note,duration=.9,velocity=.65){
     if(!loaded){
       statusEl.textContent="Carregue os instrumentos primeiro.";
       return;
     }
 
     const buffer=decoded[instrument].get(note);
+
     if(!buffer){
       statusEl.textContent="Amostra não disponível: "+note;
       return;
@@ -289,16 +802,22 @@ Ao final:
     src.connect(gain);
     gain.connect(ctx.destination);
 
-    gain.gain.setValueAtTime(0.0001,now);
-    gain.gain.exponentialRampToValueAtTime(velocity,now+0.015);
-    gain.gain.setValueAtTime(velocity,Math.max(now+0.03,now+duration-0.08));
-    gain.gain.exponentialRampToValueAtTime(0.0001,now+duration);
+    gain.gain.setValueAtTime(.0001,now);
+    gain.gain.exponentialRampToValueAtTime(velocity,now+.015);
+    gain.gain.setValueAtTime(
+      velocity,
+      Math.max(now+.03,now+duration-.08)
+    );
+    gain.gain.exponentialRampToValueAtTime(.0001,now+duration);
 
     src.start(now);
-    src.stop(now+duration+0.03);
+    src.stop(now+duration+.03);
 
     sources.push(src);
-    src.onended=()=>{sources=sources.filter(x=>x!==src)};
+
+    src.onended=()=>{
+      sources=sources.filter(x=>x!==src);
+    };
   }
 
   function stopAll(){
@@ -312,7 +831,9 @@ Ao final:
     const whites=[];
 
     for(let m=startMidi;m<=endMidi;m++){
-      if(![1,3,6,8,10].includes(m%12)) whites.push(m);
+      if(![1,3,6,8,10].includes(m%12)){
+        whites.push(m);
+      }
     }
 
     el.style.width=(whites.length*52)+"px";
@@ -332,9 +853,11 @@ Ao final:
 
       if(!isBlack){
         key.style.left=(whiteIndex*52)+"px";
+
         if(pc===0){
           key.textContent="Dó "+(Math.floor(m/12)-1);
         }
+
         whiteIndex++;
       }else{
         key.style.left=((whiteIndex*52)-17)+"px";
@@ -345,12 +868,14 @@ Ao final:
         playNote(
           instrument,
           note,
-          instrument==="flute"?0.9:1.0,
-          instrument==="flute"?0.7:0.55
+          instrument==="flute" ? .9 : 1.0,
+          instrument==="flute" ? .7 : .55
         );
       };
 
-      const end=()=>key.classList.remove("active");
+      const end=()=>{
+        key.classList.remove("active");
+      };
 
       key.addEventListener("pointerdown",e=>{
         e.preventDefault();
@@ -382,7 +907,7 @@ Ao final:
   copyBtn.addEventListener("click",async()=>{
     try{
       await navigator.clipboard.writeText(promptText.value);
-      copyStatus.textContent="Prompt copiado.";
+      copyStatus.textContent="Prompt copiado para a área de transferência.";
     }catch(err){
       promptText.focus();
       promptText.select();
